@@ -20,16 +20,16 @@ import startOfWeek from "date-fns/startOfWeek";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-import api from "../apis/backendApi";
-import AddAppointmentModal from "../components/AppointmentsCalendar/AddAppointmentModal";
-import EventInfo from "../components/AppointmentsCalendar/EventInfo";
-import EventInfoModal from "../components/AppointmentsCalendar/EventInfoModal";
+import api from "../../apis/backendApi";
+import AddAppointmentModal from "../../components/AppointmentsCalendar/AddAppointmentModal";
+import EventInfo from "../../components/AppointmentsCalendar/EventInfo";
+import EventInfoModal from "../../components/AppointmentsCalendar/EventInfoModal";
 import {
   AppointmentFormData,
   IEventInfo,
-} from "../models/AppointmentModal/AppointmentForms";
-import Client from "../models/backend/Client";
-import Staff from "../models/backend/Staff";
+} from "../../models/AppointmentModal/AppointmentForms";
+import Client from "../../models/backend/Client";
+import Staff from "../../models/backend/Staff";
 
 const locales = {
   "en-US": enUS,
