@@ -6,7 +6,8 @@ export interface IEventInfo extends Event {
 }
 
 export interface AppointmentFormData {
-  description: string;
+  client?: number;
+  staffMember?: number;
   allDay: boolean;
   start?: Date;
   end?: Date;

@@ -1,4 +1,3 @@
-import { useState, MouseEvent, useEffect } from "react";
 import {
   Box,
   Button,
@@ -9,25 +8,28 @@ import {
   Container,
   Divider,
 } from "@mui/material";
+import { MouseEvent, useEffect, useState } from "react";
 
-import { Calendar, type Event, dateFnsLocalizer } from "react-big-calendar";
+import { Calendar, dateFnsLocalizer, type Event } from "react-big-calendar";
 
 import format from "date-fns/format";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import enUS from "date-fns/locale/en-US";
+import parse from "date-fns/parse";
+import startOfWeek from "date-fns/startOfWeek";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
+import api from "../apis/backendApi";
+import AddDatePickerEventModal from "../components/AddAppointmentModal";
 import EventInfo from "../components/EventInfo";
 import EventInfoModal from "../components/EventInfoModal";
-import AddDatePickerEventModal from "../components/AddAppointmentModal";
 import {
   AppointmentFormData,
   IEventInfo,
 } from "../models/AppointmentModal/AppointmentForms";
-import api from "../apis/backendApi";
+import Client from "../models/backend/Client";
+import Staff from "../models/backend/Staff";
 
 const locales = {
   "en-US": enUS,
@@ -45,7 +47,8 @@ export const generateId = () =>
   (Math.floor(Math.random() * 10000) + 1).toString();
 
 const initialAppointmentFormData: AppointmentFormData = {
-  description: "",
+  client: undefined,
+  staffMember: undefined,
   allDay: false,
   start: undefined,
   end: undefined,
@@ -60,9 +63,44 @@ const EventCalendar = () => {
   const [eventInfoModal, setEventInfoModal] = useState(false);
 
   const [events, setEvents] = useState<IEventInfo[]>([]);
+  const [staffMembers, setStaffMembers] = useState<Staff[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
 
   const [appointmentFormData, setAppointmentFormData] =
     useState<AppointmentFormData>(initialAppointmentFormData);
+
+  const fetchStaffAndClients = async () => {
+    try {
+      const staffResponse = await api.get("/staff");
+      setStaffMembers(staffResponse.data);
+
+      const clientsResponse = await api.get("/client");
+      setClients(clientsResponse.data);
+    } catch (error) {
+      console.error("Error fetching staff and clients:", error);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await api.get("/appointment");
+      const events = response.data.map((appointment: any) => ({
+        _id: appointment.id,
+        description: `Appointment with ${appointment.client.name}`,
+        start: new Date(appointment.startTime),
+        end: new Date(appointment.endTime),
+      }));
+      console.log(events);
+      setEvents(events);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStaffAndClients();
+    fetchData();
+  }, []);
 
   const handleSelectSlot = (event: Event) => {
     setOpenAppointmentModal(true);
@@ -95,6 +133,7 @@ const EventCalendar = () => {
     const data: IEventInfo = {
       ...appointmentFormData,
       _id: generateId(),
+      description: "",
       start: setMinToZero(appointmentFormData.start),
       end: appointmentFormData.allDay
         ? addHours(appointmentFormData.start, 12)
@@ -128,7 +167,7 @@ const EventCalendar = () => {
         <Card>
           <CardHeader
             title="Calendar"
-            subheader="Create Events and Todos and manage them easily"
+            subheader="Create Appointments and manage them easily"
           />
           <Divider />
           <CardContent>
@@ -153,6 +192,8 @@ const EventCalendar = () => {
               open={openAppointmentModal}
               handleClose={handleAppointmentModalClose}
               appointmentFormData={appointmentFormData}
+              clients={clients}
+              staffMembers={staffMembers}
               setAppointmentFormData={setAppointmentFormData}
               onAddAppointment={onAddAppointment}
             />

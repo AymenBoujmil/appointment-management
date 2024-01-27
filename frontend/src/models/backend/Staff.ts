@@ -1,7 +1,7 @@
 interface Staff {
   id: number;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
 }
 
 export default Staff;

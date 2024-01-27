@@ -1,24 +1,28 @@
-import React, {
-  Dispatch,
-  MouseEvent,
-  SetStateAction,
-  ChangeEvent,
-} from "react";
 import {
-  TextField,
+  Box,
+  Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Button,
-  Box,
-  Checkbox,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+  TextField,
   Typography,
 } from "@mui/material";
-import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { ChangeEvent, Dispatch, MouseEvent, SetStateAction } from "react";
 import { AppointmentFormData } from "../models/AppointmentModal/AppointmentForms";
+import Client from "../models/backend/Client";
+import Staff from "../models/backend/Staff";
 
 interface IProps {
   open: boolean;
@@ -26,7 +30,12 @@ interface IProps {
   appointmentFormData: AppointmentFormData;
   setAppointmentFormData: Dispatch<SetStateAction<AppointmentFormData>>;
   onAddAppointment: (e: MouseEvent<HTMLButtonElement>) => void;
+  clients: Client[];
+  staffMembers: Staff[];
 }
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
 
 const AddDatePickerEventModal = ({
   open,
@@ -34,17 +43,32 @@ const AddDatePickerEventModal = ({
   appointmentFormData,
   setAppointmentFormData,
   onAddAppointment,
+  clients,
+  staffMembers,
 }: IProps) => {
-  const { description, start, end, allDay } = appointmentFormData;
+  const { client, staffMember, start, end, allDay } = appointmentFormData;
 
   const onClose = () => {
     handleClose();
   };
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeClient = (event: SelectChangeEvent<number>) => {
+    const clientIdString: string | number = event.target.value;
+
+    const clientId: number = +clientIdString;
     setAppointmentFormData((prevState) => ({
       ...prevState,
-      [event.target.name]: event.target.value,
+      client: clientId,
+    }));
+  };
+
+  const handleChangeStaffMember = (event: SelectChangeEvent<number>) => {
+    const staffMemberIdString: string | number = event.target.value;
+
+    const staffMemberId: number = +staffMemberIdString;
+    setAppointmentFormData((prevState) => ({
+      ...prevState,
+      staffMember: staffMemberId,
     }));
   };
 
@@ -61,7 +85,7 @@ const AddDatePickerEventModal = ({
         return true;
       }
     };
-    if (description === "" || start === null || checkend()) {
+    if (start === null || checkend()) {
       return true;
     }
     return false;
@@ -75,57 +99,106 @@ const AddDatePickerEventModal = ({
           To add an appointment, please fill in the information below.
         </DialogContentText>
         <Box component="form">
-          <TextField
-            name="description"
-            value={description}
-            margin="dense"
-            id="description"
-            label="Description"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={onChange}
-          />
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Box mb={2} mt={5}>
-              <DateTimePicker
-                label="Start date"
-                value={start}
-                ampm={true}
-                minutesStep={30}
-                onChange={(newValue) =>
-                  setAppointmentFormData((prevState) => ({
-                    ...prevState,
-                    start: new Date(newValue!),
-                  }))
-                }
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </Box>
-
-            <Box>
-              <Typography variant="caption" color="text" component={"span"}>
-                All day?
-              </Typography>
-              <Checkbox onChange={handleCheckboxChange} value={allDay} />
-            </Box>
-
-            <DateTimePicker
-              label="End date"
-              disabled={allDay}
-              minDate={start}
-              minutesStep={30}
-              ampm={true}
-              value={allDay ? null : end}
-              onChange={(newValue) =>
-                setAppointmentFormData((prevState) => ({
-                  ...prevState,
-                  end: new Date(newValue!),
-                }))
-              }
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
+          <Grid container spacing={2} mt={3}>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-single-client-label">Client</InputLabel>
+                <Select
+                  labelId="demo-single-client-label"
+                  id="demo-single-client"
+                  value={client}
+                  onChange={handleChangeClient}
+                  input={<OutlinedInput label="Client" />}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                        width: 250,
+                      },
+                    },
+                  }}
+                >
+                  {clients.map((client) => (
+                    <MenuItem key={client.id} value={client.id.toString()}>
+                      {client.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-single-staff-label">Staff</InputLabel>
+                <Select
+                  labelId="demo-single-staff-label"
+                  id="demo-single-staff"
+                  value={staffMember}
+                  onChange={handleChangeStaffMember}
+                  input={<OutlinedInput label="Staff" />}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                        width: 250,
+                      },
+                    },
+                  }}
+                >
+                  {staffMembers.map((staff) => (
+                    <MenuItem key={staff.id} value={staff.id}>
+                      {staff.firstName} {staff.lastName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Box mb={2} mt={3}>
+                  <DateTimePicker
+                    label="Start date"
+                    value={start}
+                    ampm={true}
+                    minutesStep={30}
+                    onChange={(newValue) =>
+                      setAppointmentFormData((prevState) => ({
+                        ...prevState,
+                        start: new Date(newValue!),
+                      }))
+                    }
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </Box>
+                <Box>
+                  <Typography variant="caption" color="text" component={"span"}>
+                    All day?
+                  </Typography>
+                  <Checkbox onChange={handleCheckboxChange} value={allDay} />
+                </Box>
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Box mb={2} mt={3}>
+                  <DateTimePicker
+                    label="End date"
+                    disabled={allDay}
+                    minDate={start}
+                    minutesStep={30}
+                    ampm={true}
+                    value={allDay ? null : end}
+                    onChange={(newValue) =>
+                      setAppointmentFormData((prevState) => ({
+                        ...prevState,
+                        end: new Date(newValue!),
+                      }))
+                    }
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </Box>
+              </LocalizationProvider>
+            </Grid>
+          </Grid>
         </Box>
       </DialogContent>
       <DialogActions>

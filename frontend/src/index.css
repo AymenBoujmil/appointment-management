@@ -12,34 +12,23 @@ code {
 }
 
 
-.rbc-header {
-  background: #a6cde9;
-  color: #2B77AE;
-  padding: 10px;
-  font-size: 12px;
-}
 
-.rbc-event {
+
+ /* .rbc-event {
+  margin: 4px;
   padding: 0px !important;
   border-radius: 0px !important;
   border: none !important;
-  background-color: transparent !important;
 }
-
-.rbc-background-event {
-  padding: 0px !important;
-  border-radius: 0px !important;
-  border: none !important;
-  background-color: transparent !important;
-}
+ */
 
 .rbc-event-label {
   display: none !important;
 }
 
 .rbc-events-container {
-  width: 100% !important;
-}
+  width: 100% !important;  
+} 
 
 .rbc-timeslot-group {
   min-height: 120px !important;
