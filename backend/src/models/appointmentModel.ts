@@ -1,4 +1,3 @@
-// src/entities/Appointment.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { StaffEntity } from "./staffModel";
 import { ClientEntity } from "./clientModel";

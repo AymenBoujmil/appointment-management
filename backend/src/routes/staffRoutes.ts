@@ -1,11 +1,15 @@
-// src/routes/staffRoutes.ts
 import express = require("express");
-import { getAllStaff, createStaff } from "../controllers/staffController";
+import {
+  getAllStaff,
+  createStaff,
+  updateStaff,
+  deleteStaff,
+} from "../controllers/staffController";
 
 const router = express.Router();
 
-// Define routes for Staff entity
 router.get("/", getAllStaff);
 router.post("/", createStaff);
-
+router.put("/:id", updateStaff);
+router.delete("/:id", deleteStaff);
 export default router;

@@ -1,11 +1,16 @@
-// src/routes/clientRoutes.ts
 import express = require("express");
-import { getAllClients, createClient } from "../controllers/clientController";
+import {
+  getAllClients,
+  createClient,
+  updateClient,
+  deleteClient,
+} from "../controllers/clientController";
 
 const router = express.Router();
 
-// Define routes for Client entity
 router.get("/", getAllClients);
 router.post("/", createClient);
+router.put("/client/:id", updateClient);
+router.delete("/client/:id", deleteClient);
 
 export default router;

@@ -1,4 +1,3 @@
-// src/server.ts
 import express = require("express");
 var cors = require("cors");
 import staffRoutes from "./routes/staffRoutes";
