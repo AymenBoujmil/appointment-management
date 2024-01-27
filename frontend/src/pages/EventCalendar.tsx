@@ -50,8 +50,8 @@ const initialAppointmentFormData: AppointmentFormData = {
   client: undefined,
   staffMember: undefined,
   allDay: false,
-  start: undefined,
-  end: undefined,
+  start: new Date(),
+  end: new Date(),
 };
 
 const EventCalendar = () => {
@@ -117,7 +117,7 @@ const EventCalendar = () => {
     setOpenAppointmentModal(false);
   };
 
-  const onAddAppointment = (e: MouseEvent<HTMLButtonElement>) => {
+  const onAddAppointment = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const addHours = (date: Date | undefined, hours: number) => {
@@ -129,28 +129,49 @@ const EventCalendar = () => {
 
       return date;
     };
+    try {
+      const response = await api.post("/appointment", {
+        startTime: appointmentFormData.start,
+        endTime: appointmentFormData.end,
+        staffId: appointmentFormData.staffMember,
+        clientId: appointmentFormData.client,
+      });
 
-    const data: IEventInfo = {
-      ...appointmentFormData,
-      _id: generateId(),
-      description: "",
-      start: setMinToZero(appointmentFormData.start),
-      end: appointmentFormData.allDay
-        ? addHours(appointmentFormData.start, 12)
-        : setMinToZero(appointmentFormData.end),
-    };
+      const createdAppointment = response.data;
 
-    const newEvents = [...events, data];
+      const data: IEventInfo = {
+        ...appointmentFormData,
+        _id: createdAppointment.id,
+        description: `Appointment with ${createdAppointment.client.name}`,
+        start: setMinToZero(appointmentFormData.start),
+        end: appointmentFormData.allDay
+          ? addHours(appointmentFormData.start, 12)
+          : setMinToZero(appointmentFormData.end),
+      };
 
-    setEvents(newEvents);
-    setAppointmentFormData(initialAppointmentFormData);
+      const newEvents = [...events, data];
+      setEvents(newEvents);
+
+      setAppointmentFormData(initialAppointmentFormData);
+      handleAppointmentModalClose();
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+    }
   };
 
-  const onDeleteEvent = () => {
-    setEvents(() =>
-      [...events].filter((e) => e._id !== (currentEvent as IEventInfo)._id!)
-    );
-    setEventInfoModal(false);
+  const onDeleteEvent = async () => {
+    try {
+      if (currentEvent) {
+        await api.delete(`/appointment/${(currentEvent as IEventInfo)._id}`);
+      }
+
+      setEvents(() =>
+        [...events].filter((e) => e._id !== (currentEvent as IEventInfo)._id!)
+      );
+      setEventInfoModal(false);
+    } catch (error) {
+      console.error("Error deleting appointment:", error);
+    }
   };
 
   return (

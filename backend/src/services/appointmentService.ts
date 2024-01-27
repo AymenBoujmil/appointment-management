@@ -31,8 +31,8 @@ export const createAppointmentService = async (
     const newAppointment = appointmentRepository.create({
       startTime,
       endTime,
-      staff: { id: staffId },
-      client: { id: clientId },
+      staff: staff,
+      client: client,
     });
 
     await appointmentRepository.save(newAppointment);

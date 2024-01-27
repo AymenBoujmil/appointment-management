@@ -85,7 +85,12 @@ const AddDatePickerEventModal = ({
         return true;
       }
     };
-    if (start === null || checkend()) {
+    if (
+      start === null ||
+      checkend() ||
+      staffMember === undefined ||
+      client === undefined
+    ) {
       return true;
     }
     return false;
@@ -159,7 +164,7 @@ const AddDatePickerEventModal = ({
                     label="Start date"
                     value={start}
                     ampm={true}
-                    minutesStep={30}
+                    minutesStep={5}
                     onChange={(newValue) =>
                       setAppointmentFormData((prevState) => ({
                         ...prevState,
@@ -184,7 +189,7 @@ const AddDatePickerEventModal = ({
                     label="End date"
                     disabled={allDay}
                     minDate={start}
-                    minutesStep={30}
+                    minutesStep={5}
                     ampm={true}
                     value={allDay ? null : end}
                     onChange={(newValue) =>
