@@ -20,9 +20,9 @@ import {
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ChangeEvent, Dispatch, MouseEvent, SetStateAction } from "react";
-import { AppointmentFormData } from "../models/AppointmentModal/AppointmentForms";
-import Client from "../models/backend/Client";
-import Staff from "../models/backend/Staff";
+import { AppointmentFormData } from "../../models/AppointmentModal/AppointmentForms";
+import Client from "../../models/backend/Client";
+import Staff from "../../models/backend/Staff";
 
 interface IProps {
   open: boolean;
@@ -37,7 +37,7 @@ interface IProps {
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 
-const AddDatePickerEventModal = ({
+const AddAppointmentModal = ({
   open,
   handleClose,
   appointmentFormData,
@@ -222,4 +222,4 @@ const AddDatePickerEventModal = ({
   );
 };
 
-export default AddDatePickerEventModal;
+export default AddAppointmentModal;

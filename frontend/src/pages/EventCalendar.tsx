@@ -21,9 +21,9 @@ import startOfWeek from "date-fns/startOfWeek";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import api from "../apis/backendApi";
-import AddDatePickerEventModal from "../components/AddAppointmentModal";
-import EventInfo from "../components/EventInfo";
-import EventInfoModal from "../components/EventInfoModal";
+import AddAppointmentModal from "../components/AppointmentsCalendar/AddAppointmentModal";
+import EventInfo from "../components/AppointmentsCalendar/EventInfo";
+import EventInfoModal from "../components/AppointmentsCalendar/EventInfoModal";
 import {
   AppointmentFormData,
   IEventInfo,
@@ -209,7 +209,7 @@ const EventCalendar = () => {
             </Box>
             <Divider style={{ margin: 10 }} />
 
-            <AddDatePickerEventModal
+            <AddAppointmentModal
               open={openAppointmentModal}
               handleClose={handleAppointmentModalClose}
               appointmentFormData={appointmentFormData}

@@ -9,7 +9,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { IEventInfo } from "../models/AppointmentModal/AppointmentForms";
+import { IEventInfo } from "../../models/AppointmentModal/AppointmentForms";
 
 interface IProps {
   open: boolean;
