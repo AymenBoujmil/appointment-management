@@ -1,4 +1,4 @@
-# ModaResa Appointment Management System
+# Appointment Management System
 
 This is a simple web application for managing appointments with clients. It consists of a ExpressJs back-end with TypeScript and an SQLite database, and a ReactJS front-end also written in TypeScript. The application allows users to manage staff members, clients, and appointments.
 
@@ -155,4 +155,5 @@ The front-end will be accessible at http://localhost:3000.
 
 ## Demonstration
 
-<video src="demonstration.mp4" controls title="Title"></video>
+https://github.com/AymenBoujmil/appointment-management/assets/56639521/dfbc1d52-c113-4bc4-8be1-6393db6ca57d
+
